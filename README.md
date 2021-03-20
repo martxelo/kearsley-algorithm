@@ -1,6 +1,6 @@
 # Kearsley algorithm
 
-This module provides a class to perform the Kearsley algorithm for sctuctural comparisons. The class calculates the rotation and translation that minimizes the root mean squared deviations for two sets of 3D points.
+This module provides a class to perform the Kearsley algorithm for structural comparisons. The class calculates the rotation and translation that minimizes the root mean squared deviations for two sets of 3D points.
 
 Original paper by Simon K. Kearsley: _On the orthogonal transformation used for structural comparisons_ https://doi.org/10.1107/S0108767388010128.
 
@@ -66,8 +66,23 @@ array([[-2.27527525e-15, -2.70751951e-15, -9.50313659e-16],
        [ 9.00000000e+00,  9.00000000e+00,  8.00000000e+00],
        [ 9.00000000e+00,  9.00000000e+00,  9.00000000e+00]])
 ```
-The values in ```v_transform``` are close to the values of ```u```.
+The values of ```v_transform``` are close to the values of ```u```.
 ```
 >>> np.allclose(u, v_transform)
 True
 ```
+There are two attributes:
+
+- Kearsley.rot: a scipy Rotation instance.
+- Kearsley.trans: a ndarray with shape (3,) with the translation.
+
+
+## Applications
+
+- Compare a set of measured points with their theoretical positions.
+- In robotics compare two sets of points measured in different coordinate systems and get the transformation between both coordinate systems. 
+- It is possible to use it in a 2D space fixing the third coordinate to zero.
+
+## Notes
+
+Check [Scipy Rotation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.html) to have all the info about Rotation instance.

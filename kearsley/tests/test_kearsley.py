@@ -52,7 +52,7 @@ def test_kearsley_fit(rnd_trans, rnd_angles):
     v = rnd_rot.apply(u) + rnd_trans
 
     k = Kearsley()
-    v_trans, rmsd = k.fit_transform(u, v, return_rmsd=True)
+    v_trans, rmsd = k.fit_transform(u, v)
 
     assert np.isclose(rmsd, 0.0, atol=1e-5)
     assert np.allclose(u, v_trans)

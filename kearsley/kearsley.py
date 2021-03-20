@@ -209,7 +209,7 @@ class Kearsley():
 
         return rmsd
 
-    def fit_transform(self, u, v, return_rmsd=False):
+    def fit_transform(self, u, v):
         '''
         Calculates the rotation and translation that best fits both sets of points and
         applies the transformation to the second set.
@@ -220,14 +220,12 @@ class Kearsley():
             Input array with 3D points.
         v: ndarray, shape (N, 3)
             Input array with 3D points.
-        return_rmsd: bool, optional
-            If True returns also the RMSD. Default is 'False'.
         
         Returns
         ----------
         array: ndarray, shape (N, 3)
             Input points transformed.
-        rmsd: float, optional
+        rmsd: float
             The root mean squared deviation.
 
         Raises
@@ -236,9 +234,7 @@ class Kearsley():
             If the input points have not the correct shape, or don't have the same number of points.
         '''
         rmsd = self.fit(u, v)
-        
-        if return_rmsd:
-            return self.transform(v), rmsd
-        else:
-            return self.transform(v)
+
+        return self.transform(v), rmsd
+
 
