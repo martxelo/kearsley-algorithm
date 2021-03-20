@@ -204,7 +204,7 @@ class Kearsley():
         self.trans = centroid_v - self.rot.inv().apply(centroid_u)
 
         # calculate rmsd
-        eig_val = max(0.0, eig_vals[0])
+        eig_val = np.abs(eig_vals[0])
         rmsd = np.sqrt(eig_val/u.shape[0])
 
         return rmsd

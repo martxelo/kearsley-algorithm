@@ -39,23 +39,14 @@ def test_kearsley_fit_failure(u, v, message_expected):
         k.fit(u, v)
 
 @pytest.mark.parametrize(
-    'rnd_dir, rnd_angle',
+    'rnd_trans, rnd_angles',
     [
-        (np.random.random(3), np.random.random()),
+        (np.random.random(3)*10, np.random.random(3)),
     ],
 )
-def test_kearsley_fit(rnd_dir, rnd_angle):
+def test_kearsley_fit(rnd_trans, rnd_angles):
 
-    rnd_dir = rnd_dir/norm(rnd_dir)
-    rnd_angle = rnd_angle * 2 * np.pi
-    
-    quat = [np.sin(rnd_angle/2)*rnd_dir[0],
-            np.sin(rnd_angle/2)*rnd_dir[1],
-            np.sin(rnd_angle/2)*rnd_dir[2],
-            np.cos(rnd_angle/2)]
-    
-    rnd_rot = Rotation.from_quat(quat)
-    rnd_trans = np.random.random((1, 3))
+    rnd_rot = Rotation.from_euler('xyz', rnd_angles)
 
     u = np.mgrid[0:10, 0:10, 0:10].reshape(3, -1).T
     v = rnd_rot.apply(u) + rnd_trans
