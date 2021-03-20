@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import numpy.linalg as la
 from scipy.spatial.transform import Rotation
@@ -206,13 +204,15 @@ class Kearsley():
         self.trans = centroid_v - self.rot.inv().apply(centroid_u)
 
         # calculate rmsd
-        rmsd = np.sqrt(eig_vals[0]/u.shape[0])
+        eig_val = max(0.0, eig_vals[0])
+        rmsd = np.sqrt(eig_val/u.shape[0])
 
         return rmsd
 
     def fit_transform(self, u, v, return_rmsd=False):
         '''
-        Calculates the rotation and translation that best fits both sets of points.
+        Calculates the rotation and translation that best fits both sets of points and
+        applies the transformation to the second set.
 
         Parameters
         ----------
