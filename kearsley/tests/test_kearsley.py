@@ -21,6 +21,7 @@ def test_kearsley_transform_failure(u, message_expected):
         k = Kearsley()
         k.transform(u)
 
+
 @pytest.mark.parametrize(
     'u, v, message_expected',
     [
@@ -38,21 +39,72 @@ def test_kearsley_fit_failure(u, v, message_expected):
         k = Kearsley()
         k.fit(u, v)
 
+
 @pytest.mark.parametrize(
-    'rnd_trans, rnd_angles',
+    'v, rot, trans, expected_u',
     [
-        (np.random.random(3)*10, np.random.random(3)),
+        (np.array([[ 0.,  0.,  1.],
+                   [ 0.,  0.,  2.],
+                   [-1.,  0.,  1.],
+                   [-1.,  0.,  2.],
+                   [ 0.,  1.,  1.],
+                   [ 0.,  1.,  2.],
+                   [-1.,  1.,  1.],
+                   [-1.,  1.,  2.]]),
+        np.array([[ 0.,  1.,  0.],
+                  [-1.,  0., -0.],
+                  [-0.,  0.,  1.]]),
+        np.array([0., 0., 1.]),
+        np.array([[0, 0, 0],
+                  [0, 0, 1],
+                  [0, 1, 0],
+                  [0, 1, 1],
+                  [1, 0, 0],
+                  [1, 0, 1],
+                  [1, 1, 0],
+                  [1, 1, 1]])),
     ],
 )
-def test_kearsley_fit(rnd_trans, rnd_angles):
-
-    rnd_rot = Rotation.from_euler('xyz', rnd_angles)
-
-    u = np.mgrid[0:10, 0:10, 0:10].reshape(3, -1).T
-    v = rnd_rot.apply(u) + rnd_trans
+def test_kearsley_transform(v, rot, trans, expected_u):
 
     k = Kearsley()
-    v_trans, rmsd = k.fit_transform(u, v)
+    k.rot = Rotation.from_matrix(rot)
+    k.trans = trans
 
-    assert np.isclose(rmsd, 0.0, atol=1e-5)
-    assert np.allclose(u, v_trans)
+    u = k.transform(v)
+
+    assert np.allclose(u, expected_u)
+
+
+@pytest.mark.parametrize(
+    'u, v, expected_rot, expected_trans',
+    [
+        (np.array([[0, 0, 0],
+                   [0, 0, 1],
+                   [0, 1, 0],
+                   [0, 1, 1],
+                   [1, 0, 0],
+                   [1, 0, 1],
+                   [1, 1, 0],
+                   [1, 1, 1]]),
+        np.array([[ 0.,  0.,  1.],
+                  [ 0.,  0.,  2.],
+                  [-1.,  0.,  1.],
+                  [-1.,  0.,  2.],
+                  [ 0.,  1.,  1.],
+                  [ 0.,  1.,  2.],
+                  [-1.,  1.,  1.],
+                  [-1.,  1.,  2.]]),
+        np.array([[ 0.,  1.,  0.],
+                  [-1.,  0., -0.],
+                  [-0.,  0.,  1.]]),
+        np.array([0., 0., 1.])),
+    ],
+)
+def test_kearsley_fit(u, v, expected_rot, expected_trans):
+
+    k = Kearsley()
+    k.fit(u, v)
+
+    assert np.allclose(k.rot.as_matrix(), expected_rot)
+    assert np.allclose(k.trans, expected_trans)

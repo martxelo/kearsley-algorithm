@@ -54,7 +54,7 @@ array([[-2.27527525e-15, -2.70751951e-15, -9.50313659e-16],
 ```
 It is also possible to fit and transform with one command.
 ```
->>> v_transform, rmsd = k.fit_transform(u, v, return_rmsd=True)
+>>> v_transform, rmsd = k.fit_transform(u, v)
 >>> rmsd
 8.529922399520072e-08
 >>> v_transform

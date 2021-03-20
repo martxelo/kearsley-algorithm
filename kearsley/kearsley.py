@@ -87,7 +87,7 @@ class Kearsley():
         self.rot = Rotation.from_quat([0, 0, 0, 1])
         self.trans = np.zeros(3)
 
-    def _kearsley_matrix(self, x, y):
+    def _kearsley_matrix(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         '''
         Calculates the Kearsley matrix.
 
@@ -125,7 +125,7 @@ class Kearsley():
 
         return K
 
-    def transform(self, u):
+    def transform(self, u: np.ndarray) -> np.ndarray:
         '''
         Transforms a list of 3D points with a rotation and a translation.
 
@@ -152,7 +152,7 @@ class Kearsley():
 
         return self.rot.apply(u - self.trans)
 
-    def fit(self, u, v):
+    def fit(self, u: np.ndarray, v: np.ndarray) -> np.float:
         '''
         Calculates the rotation and translation that best fits both sets of points.
 
@@ -209,7 +209,7 @@ class Kearsley():
 
         return rmsd
 
-    def fit_transform(self, u, v):
+    def fit_transform(self, u: np.ndarray, v: np.ndarray) -> (np.ndarray, np.float):
         '''
         Calculates the rotation and translation that best fits both sets of points and
         applies the transformation to the second set.
