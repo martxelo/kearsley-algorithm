@@ -23,66 +23,69 @@ class Kearsley():
 
     Examples
     ----------
-    >>> import numpyas np
-    >>> from scipy.spatial.transform import Rotation
-    >>> from kearsley import Kearsley
     
-    Create a set of points
-    >>> u = np.mgrid[0:3, 0:3, 0:3].reshape(3, -1).T
+    Given two sets of 3D points u and v:
     >>> u
     array([[0, 0, 0],
            [0, 0, 1],
            [0, 0, 2],
-           [0, 1, 0],
-           [0, 1, 1],
-           [0, 1, 2],
            ...,
-           [2, 1, 0],
-           [2, 1, 1],
-           [2, 1, 2],
-           [2, 2, 0],
-           [2, 2, 1],
-           [2, 2, 2]])
+           [9, 9, 7],
+           [9, 9, 8],
+           [9, 9, 9]])
+    >>> v
+    array([[ 30.50347534, -20.16089091,  -7.42752623],
+           [ 30.77704903, -21.02339348,  -7.27823201],
+           [ 31.3215374 , -21.99452332,  -7.15703548],
+           ...,
+           [ 42.05988643, -23.50924264, -15.59516355],
+           [ 42.27217891, -24.36478643, -15.59064995],
+           [ 42.66080502, -25.27318759, -15.386241  ]])
 
-    Create a rotation
-    >>> r = Rotation.from_quat([0, 0, 1/np.sqrt(2), 1/np.sqrt(2)])
-
-    Rotate the points
-    >>> v = r.apply(u)
-
-    Fit both sets of points
+    It is possible to calculate the rotation and translation that minimize the root mean squared deviation:
+    >>> from kearsley import Kearsley
     >>> k = Kearsley()
-    >>> rmsd = k.fit()
-    >>> rmsd
-    0.0
-
-    >>> k.rot.as_matrix()
-    array([[ 0.00000000e+00,  1.00000000e+00, -1.23358114e-17],
-           [-1.00000000e+00,  0.00000000e+00,  1.23358114e-17],
-           [ 1.23358114e-17,  1.23358114e-17,  1.00000000e+00]])
-
-    >>> k.trans
-    array([0., 0., 0.])
-
-    >>> np.allclose(u, k.transform(v))
-    True
-
-    Rotate the points with some noise (values may change)
-    >>> v = r.apply(u) + np.random.random((27, 3)) - 0.5
     >>> rmsd = k.fit(u, v)
     >>> rmsd
-    0.46749750347988245
+    0.10003430497284149
 
+    The rotation and translation are the attributes of the class:
     >>> k.rot.as_matrix()
-    array([[-0.04192624,  0.99812318,  0.04463537],
-           [-0.99649536, -0.03853783, -0.07424172],
-           [-0.07238224, -0.04759161,  0.99624086]])
-
+    array([[ 0.05552838, -0.04405506, -0.99748471],
+           [ 0.91956342,  0.39147652,  0.03390061],
+           [ 0.38899835, -0.9191329 ,  0.06224948]])
     >>> k.trans
-    array([ 0.04735894,  0.14588084, -0.01272672])
+    array([ 30.46560753, -20.15086287,  -7.34422276])
+    
+    Once fitted you can apply the transformation:
+    >>> v_transform = k.transform(v)
+    >>> v_transform
+    array([[ 0.08563846,  0.02807207,  0.01876202],
+           [-0.01009153, -0.0529479 ,  0.92722971],
+           [-0.05796549,  0.07167779,  2.03917659],
+           ...,
+           [ 9.0219524 ,  9.067236  ,  7.08333594],
+           [ 9.06692944,  8.9276801 ,  7.95255679],
+           [ 8.92463409,  8.93635832,  8.95139744]])
+
+    It is also possible to fit and transform with one command:
+    >>> v_transform, rmsd = k.fit_transform(u, v)
+    >>> rmsd
+    0.10003430497284149
+    >>> v_transform
+    array([[ 0.08563846,  0.02807207,  0.01876202],
+           [-0.01009153, -0.0529479 ,  0.92722971],
+           [-0.05796549,  0.07167779,  2.03917659],
+           ...,
+           [ 9.0219524 ,  9.067236  ,  7.08333594],
+           [ 9.06692944,  8.9276801 ,  7.95255679],
+           [ 8.92463409,  8.93635832,  8.95139744]])
     '''
 
     def __init__(self):
+        '''
+        Does not accept parameters. The attributes are filled with a rotation of zero degrees and a translation of zero. 
+        '''
 
         self.rot = Rotation.from_quat([0, 0, 0, 1])
         self.trans = np.zeros(3)
@@ -142,7 +145,7 @@ class Kearsley():
         Raises
         ----------
         ValueError
-            If the input points have not the correct shape
+            If the input points don't have the correct shape.
         '''
         if len(u.shape) != 2:
             raise ValueError('Input array must have 2 dimensions')
@@ -171,7 +174,7 @@ class Kearsley():
         Raises
         ----------
         ValueError
-            If the input points have not the correct shape, or don't have the same number of points.
+            If the input points don't have the correct shape, or don't have the same number of points.
         '''
         if len(u.shape) != 2 or len(v.shape) != 2:
             raise ValueError('Input arrays must have 2 dimensions')
@@ -231,7 +234,7 @@ class Kearsley():
         Raises
         ----------
         ValueError
-            If the input points have not the correct shape, or don't have the same number of points.
+            If the input points don't have the correct shape, or don't have the same number of points.
         '''
         rmsd = self.fit(u, v)
 
