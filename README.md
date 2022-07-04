@@ -4,6 +4,14 @@ This module provides a class to perform the Kearsley algorithm for structural co
 
 Original paper by Simon K. Kearsley: _On the orthogonal transformation used for structural comparisons_ https://doi.org/10.1107/S0108767388010128.
 
+## Install
+
+Install the package with:
+
+```
+user@host:~$ pip install kearsley
+```
+
 ## Usage
 
 Given two sets of 3D points ```u``` and ```v```:

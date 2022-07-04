@@ -155,7 +155,7 @@ class Kearsley():
 
         return self.rot.apply(u - self.trans)
 
-    def fit(self, u: np.ndarray, v: np.ndarray) -> np.float:
+    def fit(self, u: np.ndarray, v: np.ndarray) -> np.float64:
         '''
         Calculates the rotation and translation that best fits both sets of points.
 
@@ -212,7 +212,7 @@ class Kearsley():
 
         return rmsd
 
-    def fit_transform(self, u: np.ndarray, v: np.ndarray) -> (np.ndarray, np.float):
+    def fit_transform(self, u: np.ndarray, v: np.ndarray) -> (np.ndarray, np.float64):
         '''
         Calculates the rotation and translation that best fits both sets of points and
         applies the transformation to the second set.
