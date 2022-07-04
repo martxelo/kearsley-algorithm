@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kearsley"
-version = "0.1.0"
+version = "0.2.0"
 description = "Structural comparison of 3D points"
 authors = ["Marcelo Moreno <marcelo.moreno.suarez@gmail.com>"]
 license = "MIT"
